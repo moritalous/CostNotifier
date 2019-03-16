@@ -15,7 +15,7 @@ Parameters:
   
   ScheduleParameter:
     Type: String
-    Description: The schedule or rate (frequency) that determines when CloudWatch Events runs the rule. For example cron(0 0 * * ? *) cron(0 12 * MON ? *) rate(1 day) rate(7 days)
+    Description: The schedule or rate (frequency) that determines when CloudWatch Events runs the rule. For example cron(0 0 * * ? *) cron(0 12 * * MON *) rate(1 day) rate(7 days)
     Default: cron(0 0 * * ? *)
     
 Resources:
