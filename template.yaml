@@ -15,18 +15,9 @@ Parameters:
   
   ScheduleParameter:
     Type: String
-    Description: Schedule parameter. AllowedValues is cron(0 0 * * ? *) cron(0 6 * * ? *) cron(0 12 * * ? *) cron(0 18 * * ? *) cron(0 0 * * MON *) cron(0 6 * * MON *) cron(0 12 * * MON *) cron(0 18 * * MON *)
+    Description: The schedule or rate (frequency) that determines when CloudWatch Events runs the rule. For example `cron(0 0 * * ? *)` `cron(0 12 * * ? *)` `rate(1 day)` `rate(7 days)`
     Default: cron(0 0 * * ? *)
-    AllowedValues:
-      - cron(0 0 * * ? *)
-      - cron(0 6 * * ? *)
-      - cron(0 12 * * ? *)
-      - cron(0 18 * * ? *)
-      - cron(0 0 * * MON *)
-      - cron(0 6 * * MON *)
-      - cron(0 12 * * MON *)
-      - cron(0 18 * * MON *)
-
+    
 Resources:
   CostNotifierFunction:
     Type: AWS::Serverless::Function
