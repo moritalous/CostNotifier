@@ -15,7 +15,7 @@ Parameters:
   
   ScheduleParameter:
     Type: String
-    Description: Schedule parameter.
+    Description: Schedule parameter. AllowedValues is cron(0 0 * * ? *) cron(0 6 * * ? *) cron(0 12 * * ? *) cron(0 18 * * ? *) cron(0 0 * * MON *) cron(0 6 * * MON *) cron(0 12 * * MON *) cron(0 18 * * MON *)
     Default: cron(0 0 * * ? *)
     AllowedValues:
       - cron(0 0 * * ? *)
@@ -32,6 +32,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: cost_notifier/
+      # CodeUri: s3://sam-deploy-bucket-781749372177/815988fe16280822d19e864e3ad7f1ce
       Handler: app.lambda_handler
       Runtime: python3.6
       Events:
@@ -44,7 +45,17 @@ Resources:
         Variables:
           SNS_TOPIC_ARN: !Ref SnsTopic
       Policies:
-        CostExplorerReadOnlyPolicy: {}
+        # CostExplorerReadOnlyPolicy: {}
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ce:GetCostAndUsage
+                - ce:GetDimensionValues
+                - ce:GetReservationCoverage
+                - ce:GetReservationPurchaseRecommendation
+                - ce:GetReservationUtilization
+                - ce:GetTags
+              Resource: '*'
 
   SnsTopic:
     Type: AWS::SNS::Topic
