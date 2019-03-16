@@ -47,6 +47,8 @@ Resources:
                 - ce:GetReservationUtilization
                 - ce:GetTags
               Resource: '*'
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt SnsTopic.TopicName
 
   SnsTopic:
     Type: AWS::SNS::Topic
