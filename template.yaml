@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Cost Notifier
+
+Globals:
+  Function:
+    Timeout: 60
+
+Parameters: 
+  EmailParameter:
+    Type: String
+    Description: SNS Publish email address.
+    AllowedPattern: ^[\w!#%&'/=~`\*\+\?\{\}\^\$\-\|]+(\.[\w!#%&'/=~`\*\+\?\{\}\^\$\-\|]+)*@[\w!#%&'/=~`\*\+\?\{\}\^\$\-\|]+(\.[\w!#%&'/=~`\*\+\?\{\}\^\$\-\|]+)*$
+  
+  ScheduleParameter:
+    Type: String
+    Description: Schedule parameter.
+    Default: cron(0 0 * * ? *)
+    AllowedValues:
+      - cron(0 0 * * ? *)
+      - cron(0 6 * * ? *)
+      - cron(0 12 * * ? *)
+      - cron(0 18 * * ? *)
+      - cron(0 0 * * MON *)
+      - cron(0 6 * * MON *)
+      - cron(0 12 * * MON *)
+      - cron(0 18 * * MON *)
+
+Resources:
+  CostNotifierFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: cost_notifier/
+      Handler: app.lambda_handler
+      Runtime: python3.6
+      Events:
+        ScheduleEvent:
+          Type: Schedule
+          Properties:
+            Schedule: 
+              Ref: ScheduleParameter
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: !Ref SnsTopic
+      Policies:
+        CostExplorerReadOnlyPolicy: {}
+
+  SnsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: SNS Topic for Cost Notifier
+      Subscription:
+        - Protocol: email
+          Endpoint: 
+            Ref: EmailParameter
+
+Outputs:
+  CostNotifierFunction:
+    Description: Cost Notifier Lambda Function ARN
+    Value: !GetAtt CostNotifierFunction.Arn
+  SnsTopicArn:
+    Description: SNS Topic ARN
+    Value: !Ref SnsTopic
