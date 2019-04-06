@@ -40,7 +40,9 @@ def format_output(service_cost):
     
     output.append('-----')
     output.append('Total:\r\n\t\t\t{}{}'.format(round(total_cost, 2), total_unit))
-    return '\r\n'.join(output)
+    
+    subject = 'Monthly AWS Cost {}{}'.format(round(total_cost, 2), total_unit)
+    return '\r\n'.join(output), subject
     
     
 def sns_notify(subject, message):
@@ -51,7 +53,7 @@ def sns_notify(subject, message):
         print('ERROR: SNS_TOPIC_ARN is not set.')
         return
     
-    response = sns_client.publish(
+    sns_client.publish(
         TopicArn = topic_arn,
         Subject = subject,
         Message = message
@@ -61,9 +63,9 @@ def sns_notify(subject, message):
 def lambda_handler(event, context):
     
     service_cost =get_cost_and_usage_service()
-    output = format_output(service_cost)
+    output, subject = format_output(service_cost)
     
-    sns_notify('Monthly AWS Cost', output)
+    sns_notify(subject, output)
 
     return {
         'statusCode': 200,

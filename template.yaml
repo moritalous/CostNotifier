@@ -53,7 +53,7 @@ Resources:
   SnsTopic:
     Type: AWS::SNS::Topic
     Properties:
-      DisplayName: SNS Topic for Cost Notifier
+      DisplayName: AWS Cost Notifier
       Subscription:
         - Protocol: email
           Endpoint: 
